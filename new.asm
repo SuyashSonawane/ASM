@@ -1,4 +1,3 @@
-
 ;Program for printing HelloWorld
 
 section .data
