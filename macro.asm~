@@ -15,7 +15,7 @@
 section .data
     msg db 10,"Printed using macros"
     msg_len equ $- msg
-	la db 10,"Printed 2 using macros"
+	la db 10,"Printed using macros"
     la_len equ $- la
 
 section .text
