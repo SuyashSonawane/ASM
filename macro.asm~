@@ -17,7 +17,7 @@ section .data
 	msg0_len equ $- msg0
 	msg1 db 10,"the number of positive elements are : "
 	msg1_len equ $- msg1
-	msg2 db 10,"the number of negative elements are :"
+	msg2 db 10,"the number of negative elements are :",10
 	msg2_len equ $- msg2
 	
 
