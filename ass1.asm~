@@ -5,7 +5,7 @@ section .data
 	db "+ and - counter ",10
 	ano_len equ $-an0
 
-	array dq 1111111H,-2222222H,3333333H,-4444444H
+	array dq 11111111H,-22222222H,33333333H,-44444444H
 	n equ 4
 	msg0 db 10,"Positive and Negative elements from 64bit array"
 	msg0_len equ $- msg0
@@ -13,6 +13,14 @@ section .data
 	msg1_len equ $- msg1
 	msg2 db 10,"the number of negative elements are :"
 	msg2_len equ $- msg2
+
+
+
+section .bss
+
+p_count resq 1
+n_count resq 1
+char_ans resb 16
 
 
 ; A macro with 2 parameters
@@ -33,7 +41,8 @@ section .text
 global _start
 _start:
 
-	print an0,an0_len
+	print msg0,msg0_len
+	mov rsi,array
 	mov rbx,0
 	mov rcx,n
 	mov rdx,0
@@ -59,11 +68,34 @@ _start:
 		print msg1,msg1_len
 		mov rax,[p_count]
 		call Display
-
-		print pmsg2,pmsg2_len
-		mov rax,[n-count]
+		print msg2,msg2_len
+		mov rax,[n_count]
 		call Display
 
 
 	exit
+
+
+Display:
+	mov rbx , 16
+	mov rcx ,2
+	mov rsi , char_ans+1
+
+	cnt:
+		mov rdx,0
+		div rbx
+		cmp dl,09h
+		jbe add30
+		add dl ,07h
+
+	add30:
+		add dl,30h
+		mov [rsi],dl
+		dec rsi
+		dec rcx
+		jnz cnt
+		print char_ans,2
+
+
+	ret
 
