@@ -1,18 +1,25 @@
-section.data
+section.data:
+
 	msg0 db 10,"ASSIGNMENT 2A",10
 	msg0_len equ $- msg0
+
 	msg1 db 10,"Before Transfer",10
 	msg1_len equ $- msg1
-	msg2 db 10,"After Transfer",10
+
+	msg2 db 10,"After Transfer"
 	msg2_len equ $- msg2
+
 	msg3 db 10,"Source Block",10
 	msg3_len equ $-msg3
+
 	msg4 db 10,"Destination Block",10
 	msg4_len equ $-msg4
 
+	space db " " 
 
-	array dq 11111111H,-22222222H,33333333H,-44444444H
-	n equ 4
+	sblock db 11H,22H,33H,44H,55H
+	dblock times 5 db 0
+
 
 ; A macro with 2 parameters
 %macro print 2
@@ -28,14 +35,68 @@ section.data
         syscall
 %endmacro
 
+
+section .bss
+
+	p_count resq 1
+	n_count resq 1
+	char_ans resb 16
+
+
+
+
+
 section .text
 	global _start
 		_start:
 			print msg0,msg0_len
 			print msg1,msg1_len
-			print msg2,msg2_len
+		
 			print msg3,msg3_len
+			mov rsi, sblock
+			call Display_block
+
 			print msg4,msg4_len
 
+			mov rsi ,dblock
+			call Display_block
+	print msg2,msg2_len
 		exit
 
+
+Display_block:
+	mov rbp , 5
+	next_num:
+		mov al,[rsi]
+		push rsi
+		call Display
+		print space , 1
+		pop rsi
+		inc rsi
+		dec rbp
+		jnz next_num
+	ret
+
+
+Display:
+	mov rbx , 16
+	mov rcx ,2
+	mov rsi , char_ans+1
+
+	cnt:
+		mov rdx,0
+		div rbx
+		cmp dl,09h
+		jbe add30
+		add dl ,07h
+
+	add30:
+		add dl,30h
+		mov [rsi],dl
+		dec rsi
+		dec rcx
+		jnz cnt
+		print char_ans,2
+
+
+	ret
