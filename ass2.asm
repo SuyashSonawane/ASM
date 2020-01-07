@@ -49,18 +49,30 @@ section .bss
 section .text
 	global _start
 		_start:
-			print msg0,msg0_len
-			print msg1,msg1_len
+			print msg0,msg0_len    ;ASS 2A
+			print msg1,msg1_len    ;Before Transfer
 		
-			print msg3,msg3_len
+			print msg3,msg3_len    ;Source
 			mov rsi, sblock
 			call Display_block
 
-			print msg4,msg4_len
-
+			print msg4,msg4_len		;Destination
 			mov rsi ,dblock
 			call Display_block
-	print msg2,msg2_len
+			print msg2,msg2_len       ;After Transfer
+			
+			call Block_transfer
+			
+			print msg3,msg3_len    ;Source
+			mov rsi, sblock
+			call Display_block
+
+			
+
+			print msg4,msg4_len		;Destination
+			mov rsi ,dblock
+			call Display_block
+
 		exit
 
 
@@ -75,6 +87,20 @@ Display_block:
 		inc rsi
 		dec rbp
 		jnz next_num
+	ret
+
+
+Block_transfer:
+	mov rsi ,sblock
+	mov rdi ,dblock
+	mov rcx ,5
+	back:
+		mov al,[rsi]
+		mov [rdi],al
+		inc rsi
+		inc rdi
+		dec rcx
+		jnz back
 	ret
 
 
