@@ -1,12 +1,12 @@
 section .data
 
-	msg0 db 10,"ASSIGNMENT 2B",10
+	msg0 db 10,"ASSIGNMENT 2A",10
 	msg0_len equ $- msg0
 
 	msg1 db 10,"Before Transfer",10
 	msg1_len equ $- msg1
 
-	msg2 db 10,10,"After Transfer"
+	msg2 db 10,"After Transfer"
 	msg2_len equ $- msg2
 
 	msg3 db 10,"Source Block",10
@@ -17,8 +17,8 @@ section .data
 
 	space db " " 
 
-	sblock db 11H,22H,33H,44H,55H
-	dblock times 5 db 0
+	sblock db 11H,22H,33H,44H,55H,66H,77H,88H,99H,10H
+	dblock times 10 db 0
 
 
 ; A macro with 2 parameters
@@ -64,17 +64,15 @@ section .text
 			mov rsi, sblock
 			call Display_block
 
-			
-
 			print msg4,msg4_len		;Destination
-			mov rsi ,dblock
+			mov rsi ,dblock-6
 			call Display_block
 
 		exit
 
 
 Display_block:
-	mov rbp , 5
+	mov rbp , 10
 	next_num:
 		mov al,[rsi]
 		push rsi
@@ -88,16 +86,17 @@ Display_block:
 
 
 Block_transfer:
-	mov rsi ,sblock+4
-	mov rdi ,dblock
-	mov rcx ,5
+	mov rsi ,sblock+9
+	mov rdi ,dblock+3
+	mov rcx ,10
 	back:
 		mov al,[rsi]
 		mov [rdi],al
 		dec rsi
-		inc rdi
+		dec rdi
 		dec rcx
 		jnz back
+	;rep movsb     move string bit 
 	ret
 
 

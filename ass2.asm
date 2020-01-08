@@ -1,4 +1,4 @@
-section.data:
+section .data
 
 	msg0 db 10,"ASSIGNMENT 2A",10
 	msg0_len equ $- msg0
@@ -67,7 +67,7 @@ section .text
 			
 
 			print msg4,msg4_len		;Destination
-			mov rsi ,dblock
+			mov rsi ,dblock-2
 			call Display_block
 
 		exit
@@ -88,16 +88,18 @@ Display_block:
 
 
 Block_transfer:
-	mov rsi ,sblock
-	mov rdi ,dblock
+	mov rsi ,sblock+4
+	mov rdi ,dblock+2
 	mov rcx ,5
-	back:
-		mov al,[rsi]
-		mov [rdi],al
-		inc rsi
-		inc rdi
-		dec rcx
-		jnz back
+	;back:
+	;	mov al,[rsi]
+	;	mov [rdi],al
+	;	dec rsi
+	;	dec rdi
+	;	dec rcx
+	;	jnz back
+	std
+	rep movsb     ;move string bit 
 	ret
 
 
