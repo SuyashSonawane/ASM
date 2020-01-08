@@ -1,4 +1,4 @@
-section.data:
+section .data
 
 	msg0 db 10,"ASSIGNMENT 2A",10
 	msg0_len equ $- msg0
@@ -88,13 +88,13 @@ Display_block:
 
 
 Block_transfer:
-	mov rsi ,sblock
+	mov rsi ,sblock+4
 	mov rdi ,dblock
 	mov rcx ,5
 	back:
 		mov al,[rsi]
 		mov [rdi],al
-		inc rsi
+		dec rsi
 		inc rdi
 		dec rcx
 		jnz back
