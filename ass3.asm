@@ -12,7 +12,7 @@ section .data
 	msg2 db 10,"Enter 4 digit HEX number",10
 	msg2_len equ $- msg2
 
-	msg3 db 10,"Enter 4 digit BCD number",10
+	msg3 db 10,"Enter 5 digit BCD number",10
 	msg3_len equ $- msg3
 
 	e_msg db 10,"Invalid input",10
@@ -20,6 +20,9 @@ section .data
 
 	bcd_msg db 10,"BCD format = "
 	bcd_msg_len equ $- bcd_msg
+
+	hex_msg db 10,"Hex format = "
+	hex_msg_len equ $- hex_msg
 
 
 
@@ -46,8 +49,8 @@ section .data
 
 
 section .bss
-	char_ans resb 16
-	buf resb 5
+	char_ans resb 4
+	buf resb 2
 
 
 section .text
@@ -147,9 +150,30 @@ HEX_BCD:
 
 
 	ret
+
 BCD_HEX:
 	print msg3,msg3_len
-	call Accept
+	read buf ,6
+	mov rsi,buf
+	xor ax,ax
+	mov rbp , 5
+	mov rbx , 10
+
+	next:
+		xor cx,cx
+		mul bx
+		mov cl,[rsi]
+		sub cl,30h
+		add ax, cx
+		inc rsi
+		dec rbp
+		jnz next
+		mov [char_ans],ax
+		print hex_msg,hex_msg_len
+		mov ax,[char_ans]
+		call Display
+
+
 	ret
 Display_menu:
 	mov rax ,1
@@ -163,8 +187,8 @@ Display_menu:
 
 Display:
 	mov rbx , 16
-	mov rcx ,2
-	mov rsi , char_ans+1
+	mov rcx ,4
+	mov rsi , char_ans+3
 
 	cnt:
 		mov rdx,0
@@ -179,7 +203,7 @@ Display:
 		dec rsi
 		dec rcx
 		jnz cnt
-		print char_ans,2
+		print char_ans,4
 
 
 	ret
