@@ -15,6 +15,9 @@ section .data
 	msg3 db 10,"Enter 4 digit BCD number",10
 	msg3_len equ $- msg3
 
+	e_msg db 10,"Invalid input",10
+	e_msg_len equ $- e_msg
+
 
 
 ; A macro with 2 parameters
@@ -41,7 +44,7 @@ section .data
 
 section .bss
 	char_ans resb 16
-	buf resb 2
+	buf resb 5
 
 
 section .text
@@ -66,6 +69,7 @@ section .text
 					cmp al,'3'
 					jne invalid
 					exit
+					
 				invalid:
 					print invalid_msg,invalid_msg_len
 					jmp menu
@@ -73,13 +77,52 @@ section .text
 
 		
 
+Accept:
+	read buf,5
+	mov rcx,4
+	mov rsi,buf
+	xor bx,bx
 
+	Next_byte:
+		shl bx,4
+		mov al,[rsi]
+		cmp al,'0'
+		jb error
+		cmp al,'9'
+		jbe sub30
+		cmp al,'A'
+		jb error
+		cmp al,'F'
+		jbe sub37
+		cmp al,'a'
+		jb error
+		cmp al,'f'
+		jbe sub57
+
+	error:
+		print e_msg,e_msg_len
+		exit
+	sub57:
+		sub al,20h
+	sub37:
+		sub al,07h
+	sub30:
+		sub al,30h
+
+	add bx,ax
+	inc rsi
+	dec rcx
+	jnz Next_byte
+
+	ret
 
 HEX_BCD:
 	print msg2,msg2_len
+	call Accept
 	ret
 BCD_HEX:
 	print msg3,msg3_len
+	call Accept
 	ret
 Display_menu:
 	mov rax ,1
