@@ -18,6 +18,9 @@ section .data
 	e_msg db 10,"Invalid input",10
 	e_msg_len equ $- e_msg
 
+	bcd_msg db 10,"BCD format = "
+	bcd_msg_len equ $- bcd_msg
+
 
 
 ; A macro with 2 parameters
@@ -119,6 +122,30 @@ Accept:
 HEX_BCD:
 	print msg2,msg2_len
 	call Accept
+	mov ax,bx
+	mov bx,10
+	xor bp,bp
+
+	back:
+		xor dx,dx
+		div bx
+		push dx
+		inc bp
+		cmp ax ,0
+		jnz back
+		print bcd_msg,bcd_msg_len
+
+	back1:
+		pop dx
+		add dl,30h
+		mov [char_ans],dl
+		print char_ans , 1
+		dec bp
+		jnz back1
+
+	ret
+
+
 	ret
 BCD_HEX:
 	print msg3,msg3_len
