@@ -18,8 +18,8 @@ section .data
 	e_msg db 10,"Invalid input",10
 	e_msg_len equ $- e_msg
 
-	bcd_msg db 10,"BCD format = "
-	bcd_msg_len equ $- bcd_msg
+	answer_msg db 10,"ANS = "
+	answer_msg_len equ $- answer_msg
 
 	hex_msg db 10,"Hex format = "
 	hex_msg_len equ $- hex_msg
@@ -50,13 +50,17 @@ section .data
 
 section .bss
 	char_ans resb 4
-	buf resb 2
+	buf resb 3
+	n1 resw 1
+	n2 resw 1
+	ansl resw 1
+	ansh resw 1
 
 
 section .text
 	global _start
 		_start:
-			print msg0,msg0_len   ; ASS3
+			print msg0,msg0_len   ; ASS4
 			menu:
 				call Display_menu	
 				read buf,2
@@ -84,8 +88,8 @@ section .text
 		
 
 Accept:
-	read buf,5
-	mov rcx,4
+	read buf,3
+	mov rcx,2
 	mov rsi,buf
 	xor bx,bx
 
@@ -123,9 +127,31 @@ Accept:
 	ret
 
 MUL_sub:
-	print msg2,msg2_len	
-
-	ret
+	mov word[ansh],00
+	mov word[ansl],00
+	print msg2,msg2_len
+	call Accept
+	mov [n1] , bx
+	print msg2,msg2_len
+	call Accept
+	mov [n2] ,bx
+	mov ax ,[n1]
+	mov cx,[n2]
+	cmp cx ,0
+	je final
+	back:
+		add [ansl],ax
+		jnc next
+		inc word[ansh]
+	next:
+		dec cx
+		jnz back
+	final:
+		print answer_msg , answer_msg_len
+		mov ax, [ansh]
+		call Display
+		mov ax ,[ansl]
+		call Display		
 
 
 	ret
@@ -167,3 +193,4 @@ Display:
 
 
 	ret
+
