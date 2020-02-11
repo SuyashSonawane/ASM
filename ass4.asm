@@ -55,7 +55,7 @@ section .bss
 	n2 resw 1
 	ansl resw 1
 	ansh resw 1
-	ans resw 1;
+	ans resd 1;
 
 
 section .text
@@ -175,7 +175,7 @@ MUL_shift:
 	back1:
 		shl ebp,1
 		shl ax,1
-		jnz next1;
+		jnc next1;
 		add ebp,ebx
 
 	next1:
