@@ -55,6 +55,7 @@ section .bss
 	n2 resw 1
 	ansl resw 1
 	ansh resw 1
+	ans resw 1;
 
 
 section .text
@@ -158,6 +159,31 @@ MUL_sub:
 
 MUL_shift:
 	print msg3,msg3_len
+	mov dword[ans],00
+	call Accept
+	mov [n1],bx
+	print msg3,msg3_len
+	call Accept
+	mov [n2],bx
+	xor rax,rax
+	xor rbx,rbx
+	mov ax,[n1]
+	mov bx,[n2]
+	mov cx,16
+	mov ebp,0
+
+	back1:
+		shl ebp,1
+		shl ax,1
+		jnz next1;
+		add ebp,ebx
+
+	next1:
+		loop back1
+		mov [ans],ebp
+		print answer_msg,answer_msg_len
+		mov eax,[ans]
+		call Display
 
 
 	ret
