@@ -49,8 +49,15 @@ section .data
 
 
 section .bss
-	char_ans resb 4
+	char resb 2
+	char_ans resb 2
 	buf resb 3
+	buf_len equ $-buf
+	filename resb 50
+	ncount resq 1
+	scount resq 1
+	ccount resq 1
+
 
 
 section .text
