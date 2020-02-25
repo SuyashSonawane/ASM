@@ -1,9 +1,12 @@
+
+%include "macro.asm"
+
 section .data
 
 	msg0 db 10,"ASSIGNMENT 5",10
 	msg0_len equ $- msg0
 
-	msg1 db 10,"1.No of Blank Spaces",10,"2.Occurance of a letter",10,"3.No of Lines",10,"4.Exit",10
+	msg1 db 10,"1.No of Blank Spaces",10,"2.Occurance of a letter",10,"3.No of Lines",10,"4.Exit",10,"=>=>=>",10
 	msg1_len equ $- msg1
 
 	invalid_msg db 10,"Invalid Option Entered",10
@@ -21,57 +24,12 @@ section .data
 	answer_msg db 10,"ANS = "
 	answer_msg_len equ $- answer_msg
 
-	hex_msg db 10,"Hex format = "
-	hex_msg_len equ $- hex_msg
+	fmsg db 10,"Enter File name = "
+	fmsg_len equ $- fmsg
 
+	cmsg db 10,"Enter character to be serached = "
+	cmsg_len equ $- cmsg
 
-
-; A macro with 2 parameters
-%macro print 2
-    mov rax ,1
-    mov rdi, 1
-    mov rsi ,%1
-    mov rdx ,%2
-    syscall
-%endmacro
-%macro exit 0
-    	mov rax ,60
-        mov rdi ,0
-        syscall
-%endmacro
-%macro read 2
-    	mov rax ,0
-        mov rdi ,0
-        mov rsi, %1
-        mov rdx, %2
-        syscall
-%endmacro
-%macro fopen 1
-	mov rax,2
-	mov rdi %1
-	mov rsi,2
-	mov rdx , 07770
-	syscall
-%endmacro
-%macro fread 3
-	mov rax,0
-	mov rdi %1
-	mov rsi,%2
-	mov rdx , %3
-	syscall
-%endmacro
-%macro fwrite 3
-	mov rax,1
-	mov rdi %1
-	mov rsi,%2
-	mov rdx , %3
-	syscall
-%endmacro
-%macro fclose 1
-	mov rax,3
-	mov rdi %1
-	syscall
-%endmacro
 
 
 
@@ -85,13 +43,35 @@ section .bss
 	ncount resq 1
 	scount resq 1
 	ccount resq 1
+	filehandler resq 1
+	abuff resq 1
 
 
 
 section .text
 	global _start
 		_start:
-			print msg0,msg0_len   ; ASS4
+			print msg0,msg0_len   ; ASS5
+			print fmsg,fmsg_len
+			read filename ,50
+			dec rax
+			mov byte[filename+rax],0
+			print cmsg,cmsg_len
+			read char,2
+			fopen filename
+			cmp rax,-1H
+			jle error
+			mov [filehandler],rax
+			fread [filehandler],buf,buf_len
+			mov [abuff],rax
+			;call far_procedure
+			exit
+
+		error:
+			print e_msg,e_msg_len
+			exit
+
+
 			menu:
 				call Display_menu	
 				read buf,2
