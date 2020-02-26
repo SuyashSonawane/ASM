@@ -3,7 +3,7 @@
 
 section .data
 
-	msg0 db 10,"ASSIGNMENT 5",10
+	msg0 db 10,"ASSIGNMENT 5",10	
 	msg0_len equ $- msg0
 
 	msg1 db 10,"1.No of Blank Spaces",10,"2.Occurance of a letter",10,"3.No of Lines",10,"4.Exit",10,"=>=>=>",10
@@ -39,7 +39,7 @@ section .data
 section .bss
 	char resb 2
 	char_ans resb 16
-	buf resb 3
+	buf resb 4096
 	buf_len equ $-buf
 	filename resb 50
 	ncount resq 1
