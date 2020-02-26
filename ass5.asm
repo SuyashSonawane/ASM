@@ -15,8 +15,11 @@ section .data
 	msg2 db 10,"No of blank Spaces are : ",10
 	msg2_len equ $- msg2
 
-	msg3 db 10,"Enter the letter : ",10
+	msg3 db 10,"Occurance of letter : ",10
 	msg3_len equ $- msg3
+
+	msg4 db 10,"Occurance of new line : ",10
+	msg4_len equ $- msg4
 
 	e_msg db 10,"Invalid input",10
 	e_msg_len equ $- e_msg
@@ -33,10 +36,9 @@ section .data
 
 
 
-
 section .bss
 	char resb 2
-	char_ans resb 2
+	char_ans resb 16
 	buf resb 3
 	buf_len equ $-buf
 	filename resb 50
@@ -64,7 +66,7 @@ section .text
 			mov [filehandler],rax
 			fread [filehandler],buf,buf_len
 			mov [abuff],rax
-			;call far_procedure
+			call far_procedure
 			exit
 
 		error:
@@ -72,37 +74,54 @@ section .text
 			exit
 
 
-			menu:
-				call Display_menu	
-				read buf,2
-				mov al ,[buf]
-				c1:
-					cmp al ,'1'
-					jne c2
-					call Blank
-					jmp menu
-				c2:
-					cmp al,'2'
-					jne c3
-					call Occurance
-					jmp menu
-				c3:
-					cmp al,'3'
-					jne c4
-					call Lines
-					jmp menu
-				c4:
-					cmp al,'4'
-					jne invalid
-					exit
-					
-				invalid:
-					print invalid_msg,invalid_msg_len
-					jmp menu
-
+			
 
 		
 
+
+far_procedure:
+	xor rax,rax
+	xor rbx,rbx
+	xor rcx,rcx
+	xor rsi,rsi
+	mov bl,[char]
+	mov rsi,buf
+	mov rcx,[abuff]
+
+	again:
+		mov al,[rsi]
+		case_s:
+			cmp al,20h
+			jne case_n
+			inc qword[scount]
+			jmp next
+		case_n:
+			cmp al,0Ah
+			jne case_c
+			inc qword[ncount]
+			jmp next
+		case_c:
+			cmp al,bl
+			jne next
+			inc qword[ccount]
+		next:
+			inc rsi
+			dec rcx
+			jnz again
+			print msg2,msg2_len
+			mov rax,[scount]
+			call Display
+			print msg4,msg4_len
+			mov rax,[ncount]
+			call Display
+			print msg3,msg3_len
+			mov rax,[ccount]
+			call Display
+			fclose [filehandler]
+
+
+ 
+	ret
 
 Blank:
 	print msg2,msg2_len
