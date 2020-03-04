@@ -7,16 +7,16 @@ section .data
 	msg0 db 10,"Protection Mode"
 	msg0_len equ $- msg0
 
-	msg1 db 10,"GDTR ",10
+	msg1 db 10,"GDTR "
 	msg1_len equ $- msg1
 
-	msg2 db 10,"LDTR ",10
+	msg2 db 10,"LDTR "
 	msg2_len equ $- msg2
 
-	msg3 db 10,"TR ",10
+	msg3 db 10,"TR "
 	msg3_len equ $- msg3
 
-	msg4 db 10,"MSW ",10
+	msg4 db 10,"MSW "
 	msg4_len equ $- msg4
 
 	msg5 db 10,"Real Mode"
@@ -25,8 +25,11 @@ section .data
 	msg6 db ":"
 	msg6_len equ $- msg6
 
-	msg7 db 10,"LDTR ",10
+	msg7 db 10,"IDTR "
 	msg7_len equ $- msg7
+
+	arr db "=>  "
+	arr_len equ $- arr
 
 
 
@@ -71,6 +74,7 @@ _start:
 	print msg0,msg0_len
 
 	print msg1,msg1_len
+	print arr,arr_len
 
 	mov rax , [GDTR + 4]
 	call Display
@@ -83,29 +87,29 @@ _start:
 	call Display
 
 	print msg7,msg7_len
-
+	print arr,arr_len
 	mov rax , [IDTR + 4]
 	call Display
+	
 	mov rax,[IDTR + 2]
 	call Display
 
 	print msg6,msg6_len
-
 	mov rax,[IDTR]
 	call Display
 
 	print msg2,msg2_len
-
+	print arr,arr_len
 	mov rax,[LDTR]
 	call Display
 
 	print msg3,msg3_len
-
+	print arr,arr_len
 	mov rax,[TR]
 	call Display
 
 	print msg4,msg4_len
-
+	print arr,arr_len
 	mov rax,[MSW]
 	call Display
 
@@ -119,8 +123,8 @@ _start:
 
 Display:
 	mov rbx , 16
-	mov rcx ,2
-	mov rsi , char_ans+1
+	mov rcx ,4
+	mov rsi , char_ans+3	
 
 	cnt:
 		mov rdx,0
@@ -135,7 +139,7 @@ Display:
 		dec rsi
 		dec rcx
 		jnz cnt
-		print char_ans,2
+		print char_ans,4
 
 
 	ret
