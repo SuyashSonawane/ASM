@@ -36,11 +36,14 @@ section .data
 
 
 section .bss
-	buf resb 4096
+	buf resb 1024
 	buf_len equ $-buf
 	filename resb 50
 	filehandler resq 1
 	abuff resq 1
+	array resq 1
+	n resq 1	
+	;char_ans resb 16
 
 
 section .text
@@ -58,20 +61,91 @@ _start:
 	fread [filehandler],buf,buf_len
 	mov [abuff],rax
 
-	xor rax,rax
-	xor rbx,rbx
-	xor rcx,rcx
-	xor rsi,rsi
-	mov rsi,buf
-	mov rcx,[abuff]
-
-
-	mov al,[rsi]
+	call BSort
 
 
 
-exit
+exit	
 	error:
 	print err,err_len
 	exit
+
+
+
+BSort:
+	call buf_array
+
+	xor rax,rax
+	mov rbp,[n]
+	
+	xor rcx,rcx
+	xor rdx,rdx
+	xor rsi,rsi
+	xor rdi,rdi
+
+	oloop:
+		mov rbx,0
+		mov rsi,array
+	iloop:
+		mov rdi,rsi
+		inc rdi
+		mov al,[rsi]
+		cmp al,[rdi]
+		jbe next
+		mov dl,0
+		mov dl,[rdi]
+		mov [rdi],al
+        mov [rsi],dl
+    next:
+    	inc rsi
+        inc rbx                
+        cmp rbx,rbp
+        jb iloop
+      
+        inc rcx
+        cmp rcx,rbp
+        jb oloop
+
+    fwrite    [filehandler],array,[n]
+
+    fclose [filehandler]
+
+    print array ,[n]  
+
+
+
+
+
+
+
+
+ret
+
+buf_array:	
+	xor rcx,rcx
+	xor rsi,rsi
+	xor rdi,rdi
+
+    mov    rcx,[abuff]
+    mov    rsi,buf
+    mov    rdi,array
+
+next_num:
+    mov    al,[rsi]
+    mov    [rdi],al
+
+    inc    rsi        
+    inc    rsi       
+    inc    rdi      
+  		
+  	inc byte[n]
+
+
+    dec    rcx        
+    dec    rcx        
+    jnz    next_num
+
+    print array,[n]
+
+    ret
 
