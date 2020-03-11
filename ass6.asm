@@ -90,7 +90,7 @@ _start:
 	print arr,arr_len
 	mov rax , [IDTR + 4]
 	call Display
-	
+
 	mov rax,[IDTR + 2]
 	call Display
 
@@ -105,6 +105,7 @@ _start:
 
 	print msg3,msg3_len
 	print arr,arr_len
+	
 	mov rax,[TR]
 	call Display
 
